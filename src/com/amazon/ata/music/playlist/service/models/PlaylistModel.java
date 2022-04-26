@@ -1,7 +1,10 @@
 package com.amazon.ata.music.playlist.service.models;
 
+import com.beust.jcommander.internal.Lists;
+
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class PlaylistModel {
     private String id;
@@ -99,6 +102,7 @@ public class PlaylistModel {
         private int songCount;
         private List<String> tags;
 
+
         public Builder withId(String idToUse) {
             this.id = idToUse;
             return this;
@@ -119,8 +123,13 @@ public class PlaylistModel {
             return this;
         }
 
-        public Builder withTags(List<String> tagsToUse) {
-            this.tags = tagsToUse;
+        public Builder withTags(Set<String> tagsToUse) {
+            List<String> arrayListOfTags = Lists.newArrayList(tagsToUse);
+            //List<String> arrayListOfTags = (List<String>) tagsToUse;  // does not work
+            if (arrayListOfTags.size() == 0) {
+                return null;
+            }
+            this.tags = arrayListOfTags;
             return this;
         }
 

@@ -1,14 +1,20 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.converters.ModelConverter;
+import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
+import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.models.PlaylistModel;
 import com.amazon.ata.music.playlist.service.models.requests.CreatePlaylistRequest;
 import com.amazon.ata.music.playlist.service.models.results.CreatePlaylistResult;
-import com.amazon.ata.music.playlist.service.models.PlaylistModel;
-import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
-
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.google.common.collect.Sets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Implementation of the CreatePlaylistActivity for the MusicPlaylistService's CreatePlaylist API.
@@ -44,9 +50,22 @@ public class CreatePlaylistActivity implements RequestHandler<CreatePlaylistRequ
     @Override
     public CreatePlaylistResult handleRequest(final CreatePlaylistRequest createPlaylistRequest, Context context) {
         log.info("Received CreatePlaylistRequest {}", createPlaylistRequest);
+        Playlist newPlaylist = new Playlist();
+        List<AlbumTrack> emptySongList = new ArrayList<>();
+        newPlaylist.setName(createPlaylistRequest.getName());
+        newPlaylist.setCustomerId(createPlaylistRequest.getCustomerId());
+        if (createPlaylistRequest.getTags().size() > 0) {
+            newPlaylist.setTags(Sets.newHashSet(createPlaylistRequest.getTags()));
+        }
+        newPlaylist.setSongList(emptySongList);
+        newPlaylist.setSongCount(0);
+        String playlistId = playlistDao.savePlaylist(newPlaylist);
+        newPlaylist.setId(playlistId);
+        PlaylistModel playlistModel = new ModelConverter().toPlaylistModel(newPlaylist);
+
 
         return CreatePlaylistResult.builder()
-                .withPlaylist(new PlaylistModel())
+                .withPlaylist(playlistModel)
                 .build();
     }
 }
