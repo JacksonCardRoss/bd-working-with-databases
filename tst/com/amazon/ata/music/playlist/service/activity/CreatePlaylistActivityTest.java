@@ -1,6 +1,7 @@
 package com.amazon.ata.music.playlist.service.activity;
 
 import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
+import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
 import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
 import com.amazon.ata.music.playlist.service.models.requests.CreatePlaylistRequest;
 import com.amazon.ata.music.playlist.service.models.results.CreatePlaylistResult;
@@ -9,7 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +41,15 @@ public class CreatePlaylistActivityTest {
         String expectedCustomerId = "expectedCustomerId";
         String expectedId = "expectedId";
         List<String> expectedTags = Lists.newArrayList("tag");
+        Playlist playlist = new Playlist();
+        List<AlbumTrack> emptySongList = new ArrayList<>();
+        Set<String> tags = new HashSet<>();
+        playlist.setCustomerId(expectedCustomerId);
+        playlist.setName(expectedName);
+        playlist.setId(expectedId);
+        playlist.setSongList(emptySongList);
+        playlist.setSongCount(0);
+        playlist.setTags(tags);
 
         CreatePlaylistRequest request = CreatePlaylistRequest.builder()
                         .withName(expectedName)
@@ -44,7 +57,7 @@ public class CreatePlaylistActivityTest {
                         .withTags(expectedTags)
                         .build();
 
-        when(playlistDao.savePlaylist(any(Playlist.class))).thenReturn(expectedId);
+        when(playlistDao.savePlaylist(any(Playlist.class))).thenReturn(playlist);
 
         // WHEN
         CreatePlaylistResult result = createPlaylistActivity.handleRequest(request, null);

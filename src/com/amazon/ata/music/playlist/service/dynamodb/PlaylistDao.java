@@ -42,7 +42,7 @@ public class PlaylistDao {
      * @param playlist the playlist to be saved
      */
 
-    public String savePlaylist(Playlist playlist) {
+    public Playlist savePlaylist(Playlist playlist) {
         String requestedName = playlist.getName();
         String customerId = playlist.getCustomerId();
         String playlistId = MusicPlaylistServiceUtils.generatePlaylistId();
@@ -54,6 +54,6 @@ public class PlaylistDao {
         }
         playlist.setId(playlistId);
         dynamoDbMapper.save(playlist);
-        return playlistId;
+        return playlist;
     }
 }

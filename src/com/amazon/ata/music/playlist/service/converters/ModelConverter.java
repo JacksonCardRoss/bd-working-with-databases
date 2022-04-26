@@ -10,6 +10,14 @@ public class ModelConverter {
      * @return the converted playlist
      */
     public PlaylistModel toPlaylistModel(Playlist playlist) {
+        if (playlist.getTags() == null) {
+            return PlaylistModel.builder()
+                    .withId(playlist.getId())
+                    .withName(playlist.getName())
+                    .withCustomerId(playlist.getCustomerId())
+                    .withSongCount(playlist.getSongCount())
+                    .build();
+        }
         return PlaylistModel.builder()
                 .withId(playlist.getId())
                 .withName(playlist.getName())

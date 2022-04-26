@@ -67,10 +67,10 @@ public class PlaylistDaoTest {
         playlist.setCustomerId(validCustomerId);
 
         // WHEN
-        String playlistId = playlistDao.savePlaylist(playlist);
+        Playlist returnedPlaylist = playlistDao.savePlaylist(playlist);
 
         // THEN
-        assertEquals(5, playlistId.length(), "Expected an Id to be generated and to be 5 characters");
+        assertEquals(5, returnedPlaylist.getId().length(), "Expected an Id to be generated and to be 5 characters");
     }
 
     @Test

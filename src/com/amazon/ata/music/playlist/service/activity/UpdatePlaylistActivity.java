@@ -1,10 +1,14 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.converters.ModelConverter;
+import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.exceptions.InvalidAttributeChangeException;
+import com.amazon.ata.music.playlist.service.exceptions.InvalidAttributeValueException;
 import com.amazon.ata.music.playlist.service.models.PlaylistModel;
 import com.amazon.ata.music.playlist.service.models.requests.UpdatePlaylistRequest;
 import com.amazon.ata.music.playlist.service.models.results.UpdatePlaylistResult;
-import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
-
+import com.amazon.ata.music.playlist.service.util.MusicPlaylistServiceUtils;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.logging.log4j.LogManager;
@@ -49,9 +53,20 @@ public class UpdatePlaylistActivity implements RequestHandler<UpdatePlaylistRequ
     @Override
     public UpdatePlaylistResult handleRequest(final UpdatePlaylistRequest updatePlaylistRequest, Context context) {
         log.info("Received UpdatePlaylistRequest {}", updatePlaylistRequest);
+        Playlist receivedPlaylist = playlistDao.getPlaylist(updatePlaylistRequest.getId());
+        if (!MusicPlaylistServiceUtils.isValidString(updatePlaylistRequest.getName())) {
+            throw new InvalidAttributeValueException("Invalid playlist name " + updatePlaylistRequest.getName());
+        }
+        if (!updatePlaylistRequest.getCustomerId().equals(receivedPlaylist.getCustomerId())) {
+            throw new InvalidAttributeChangeException
+                    ("The received customer id does not match the playlist customer id!");
+        }
+        receivedPlaylist.setName(updatePlaylistRequest.getName());
+        Playlist playlist = playlistDao.savePlaylist(receivedPlaylist);
+        PlaylistModel playlistModel = new ModelConverter().toPlaylistModel(playlist);
 
         return UpdatePlaylistResult.builder()
-                .withPlaylist(new PlaylistModel())
+                .withPlaylist(playlistModel)
                 .build();
     }
 }

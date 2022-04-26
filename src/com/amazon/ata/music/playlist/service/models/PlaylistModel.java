@@ -124,12 +124,11 @@ public class PlaylistModel {
         }
 
         public Builder withTags(Set<String> tagsToUse) {
-            List<String> arrayListOfTags = Lists.newArrayList(tagsToUse);
-            //List<String> arrayListOfTags = (List<String>) tagsToUse;  // does not work
-            if (arrayListOfTags.size() == 0) {
+            if (null == tagsToUse ||tagsToUse.size() == 0) {
                 return null;
             }
-            this.tags = arrayListOfTags;
+            //List<String> arrayListOfTags = Lists.newArrayList(tagsToUse);
+            this.tags = Lists.newArrayList(tagsToUse);
             return this;
         }
 
