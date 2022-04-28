@@ -52,7 +52,10 @@ public class PlaylistDao {
         if (!MusicPlaylistServiceUtils.isValidString(playlist.getCustomerId())) {
             throw new InvalidAttributeValueException("Invalid customer id " + customerId);
         }
-        playlist.setId(playlistId);
+        if (playlist.getId() == null) {
+            // Fix for UpdatePlaylist overwriting id
+            playlist.setId(playlistId);
+        }
         dynamoDbMapper.save(playlist);
         return playlist;
     }
