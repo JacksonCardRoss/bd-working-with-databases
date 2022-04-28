@@ -13,6 +13,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -57,8 +58,12 @@ public class AddSongToPlaylistActivity implements RequestHandler<AddSongToPlayli
         Playlist playlist = playlistDao.getPlaylist(addSongToPlaylistRequest.getId());
         AlbumTrack albumTrack = albumTrackDao.getAlbumTrack
                 (addSongToPlaylistRequest.getAsin(), addSongToPlaylistRequest.getTrackNumber());
-        List<AlbumTrack> songList = playlist.getSongList();
-        songList.add(albumTrack);
+        LinkedList<AlbumTrack> songList = (LinkedList<AlbumTrack>) playlist.getSongList();
+        if (addSongToPlaylistRequest.isQueueNext()) {
+            songList.addFirst(albumTrack);
+        } else {
+            songList.addLast(albumTrack);
+        }
         playlist.setSongCount(playlist.getSongCount() + 1);
         playlist.setSongList(songList);
         playlistDao.savePlaylist(playlist);

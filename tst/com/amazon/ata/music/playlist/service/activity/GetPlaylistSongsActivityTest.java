@@ -2,18 +2,21 @@ package com.amazon.ata.music.playlist.service.activity;
 
 import com.amazon.ata.music.playlist.service.converters.ModelConverter;
 import com.amazon.ata.music.playlist.service.dynamodb.PlaylistDao;
+import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
 import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
 import com.amazon.ata.music.playlist.service.exceptions.PlaylistNotFoundException;
-import com.amazon.ata.music.playlist.service.helpers.AlbumTrackTestHelper;
-import com.amazon.ata.music.playlist.service.helpers.PlaylistTestHelper;
 import com.amazon.ata.music.playlist.service.models.SongModel;
 import com.amazon.ata.music.playlist.service.models.SongOrder;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
+import com.amazon.ata.music.playlist.service.helpers.AlbumTrackTestHelper;
+import com.amazon.ata.music.playlist.service.helpers.PlaylistTestHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +89,6 @@ public class GetPlaylistSongsActivityTest {
         AlbumTrackTestHelper.assertAlbumTracksEqualSongModels(playlist.getSongList(), result.getSongList());
     }
 
-    /*
     @Test
     void handleRequest_withReversedSongOrder_returnsReversedPlaylistSongs() {
         // GIVEN
@@ -107,7 +109,6 @@ public class GetPlaylistSongsActivityTest {
         // THEN
         AlbumTrackTestHelper.assertAlbumTracksEqualSongModels(reversedAlbumTracks, result.getSongList());
     }
-     */
 
     @Test
     void handleRequest_withShuffledSongOrder_returnsSongsInAnyOrder() {
