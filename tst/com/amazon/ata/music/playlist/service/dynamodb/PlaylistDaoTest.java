@@ -58,7 +58,7 @@ public class PlaylistDaoTest {
     }
 
     @Test
-    public void savePlaylist_validPlaylist_returnsPlaylistId() {
+    public void savePlaylist_validPlaylist_returnsPlaylist() {
         // GIVEN
         Playlist playlist = new Playlist();
         String validCustomerId = "validId";
